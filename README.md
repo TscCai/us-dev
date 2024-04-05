@@ -3,9 +3,7 @@
 
 ## How to install
 ```bash
-npm install git@github.com:TscCai/us-dev.git -g
-# Solve the global dependencies
-npm root -g
+npm install https://github.com/TscCai/us-dev.git -g
 
 ```
 
