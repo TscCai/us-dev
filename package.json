@@ -1,0 +1,22 @@
+{
+  "name": "us-dev",
+  "version": "0.1.0",
+  "description": "A user script development toolkit",
+  "main": "./bin/cli.js",
+  "scripts": {
+    "test": "usdev help"
+  },
+  "bin": {
+    "usdev": "./bin/cli.js"
+  },
+  "author": "Tsccai",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.7.0"
+  },
+  "dependencies": {
+    "open": "^8.4.2",
+    "readline-sync": "^1.4.10",
+    "uglify-js": "^3.17.4"
+  }
+}

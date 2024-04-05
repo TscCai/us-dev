@@ -1,0 +1,13 @@
+{
+    "main": "./src/main.js",
+    "header": "./src/gm_header.js",
+    "output": "./dist/output.user.js",
+    "version": "0.1",
+    "global_defs": {},
+    "extra_copy": [],
+    "build_timestamp": true,
+    "build_hash": true,
+    "use_strict": true,
+    "uglifyjs_options": {},
+    "deploy": "chrome"
+}
