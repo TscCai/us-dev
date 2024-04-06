@@ -67,8 +67,8 @@ function processHeader(config) {
  */
 function genScriptDict(srcBase, entryPoint, dict) {
     const reg = /require\(['"](.*)['"]\)/g;
-    console.log(`entryPoint: ${entryPoint}`);
-    if (dict.has(entryPoint) || entryPoint === void 0) {
+    
+    if (dict.has(entryPoint)) {
         // 递归终点
         return;
     }
