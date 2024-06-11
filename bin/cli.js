@@ -5,7 +5,6 @@ const fs = require('fs');
 const rlSync = require('readline-sync');
 const path = require('path');
 const packageJson = require('../package.json');
-const open = require('open');
 
 const WORKSPACE = path.resolve().replaceAll('\\', '/').endsWith('/') ? path.resolve().replaceAll('\\', '/') : path.resolve().replaceAll('\\', '/') + "/";
 
@@ -222,11 +221,17 @@ function deploy(args) {
     const builtScript = config.output;
     const url = `file:///${path.resolve(WORKSPACE, builtScript)}`;
     // 用浏览器打开脚本，手动安装部署
-    open(url, { app: { name: browser } });
+    try {
+        open(url, browser);
+    }
+    catch (err) {
+        console.error('Deploy failed.');
+        console.error(err);
+    }
 }
 
 /**
- * @description 将us-dev配置中的浏览器名称转换为open包对应的浏览器
+ * @description 将us-dev配置中的浏览器名称转换为对应的浏览器
  * @author Tsccai
  * @date 2024-04-05
  * @param {string} name 浏览器名称
@@ -234,16 +239,25 @@ function deploy(args) {
  */
 function getDeployBrowser(name) {
     let browser = void 0;
-    switch (name.toLowerCase()) {
+    switch (name.toLocaleLowerCase()) {
         case "chrome":
-            browser = open.apps.chrome;
+            browser = "chrome";
             break;
         case "firefox":
-            browser = open.apps.firefox;
+            browser = "firefox"
             break;
-        case "edge" || "msedge":
-            browser = open.apps.edge;
+        case "edge":
+        case "msedge":
+            browser = "msedge";
             break;
+        default:
+            throw new Error('No browser can use.');
     }
     return browser;
+}
+
+function open(url, browser) {
+    const child_process = require('child_process');
+    const cmd = `start ${browser} ${url}`;
+    child_process.execSync(cmd);
 }

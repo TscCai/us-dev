@@ -9,5 +9,5 @@
     "build_hash": true,
     "use_strict": true,
     "uglifyjs_options": {},
-    "deploy": "chrome"
+    "deploy": "msedge"
 }
