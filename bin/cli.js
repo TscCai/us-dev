@@ -84,6 +84,7 @@ function loadConfig(args) {
     let config = {};
     let configFile = "";
     switch (args.length) {
+        // Use custom config, not support yet.
         // case 2:
         //     if (!(args[0].toLowerCase() === '--config' || args[0].toLowerCase() === '-c')) {
         //         console.warn(`Unknown options ${args[0]}`);

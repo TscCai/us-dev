@@ -212,15 +212,27 @@ function createScriptHash(data) {
 }
 
 /**
- * @description 编译工作完成后的额外工作：复制额外文件
+ * @description 编译工作完成后的额外工作：复制额外文件等
  * @author Tsccai
  * @date 2024-04-05
- * @param {any} config us-dev.json文件的JS对象
+ * @param {Object} config us-dev.json文件的JS对象
  * @returns {void}
  */
 function afterBuild(config) {
-    if (Array.isArray(config.extra_copy) && config.extra_copy.length > 0) {
-        for (const transport of config.extra_copy) {
+    copyExtraFiles(config.extra_copy);
+}
+
+/**
+ * @description 复制额外文件的具体实现
+ * @author Tsccai
+ * @date 2024-06-15
+ * @param {Array} extra_copy
+ * @returns {any}
+ */
+function copyExtraFiles(extra_copy){
+    if (Array.isArray(extra_copy) && extra_copy.length > 0) {
+        console.info('copying extra files...');
+        for (const transport of extra_copy) {
             if (transport.src === void 0 || transport.dest === void 0) {
                 throw new Error('us-dev.json配置文件中错误的配置节：extra_copy数组中存在未包含"src"或"dest"属性的元素。');
             }
@@ -237,8 +249,5 @@ function afterBuild(config) {
     else {
         console.info('no extra files need to copy.');
     }
-
-
 }
-
 module.exports = { build: build };
