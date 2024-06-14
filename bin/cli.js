@@ -256,6 +256,14 @@ function getDeployBrowser(name) {
     return browser;
 }
 
+/**
+ * @description 使用start命令调用浏览器打开脚本
+ * @author Tsccai
+ * @date 2024-06-15
+ * @param {any} url
+ * @param {any} browser
+ * @returns {any}
+ */
 function open(url, browser) {
     const child_process = require('child_process');
     const cmd = `start ${browser} ${url}`;

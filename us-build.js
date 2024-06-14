@@ -67,7 +67,7 @@ function processHeader(config) {
  */
 function genScriptDict(srcBase, entryPoint, dict) {
     const reg = /require\(['"](.*)['"]\)/g;
-    
+
     if (dict.has(entryPoint)) {
         // 递归终点
         return;
@@ -221,6 +221,9 @@ function createScriptHash(data) {
 function afterBuild(config) {
     if (Array.isArray(config.extra_copy) && config.extra_copy.length > 0) {
         for (const transport of config.extra_copy) {
+            if (transport.src === void 0 || transport.dest === void 0) {
+                throw new Error('us-dev.json配置文件中错误的配置节：extra_copy数组中存在未包含"src"或"dest"属性的元素。');
+            }
             const src = path.resolve(transport.src);
             if (!fs.existsSync(src)) {
                 console.warn(`No such file: ${transport.src}, skip copy.`);
