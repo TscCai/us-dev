@@ -24,7 +24,16 @@ const build = function (config) {
 
     // 生成uglifyJS配置，编译代码
     let options = createUglifyJSOptions(config);
+
+    console.info('compiling...');
     let result = UglifyJS.minify(src, options);
+
+    // 若uglifyJS中出现异常，则将该异常抛出
+    if (result.error !== void 0 && result.error instanceof Error) {
+        console.error("Error occurred when compiling.");
+        throw result.error;
+    }
+
     // 装饰编译后的代码：添加头文件、代码Hash、编译时间戳等
     let script = decorateMinifiedCode(header, result.code, config);
 
@@ -229,7 +238,7 @@ function afterBuild(config) {
  * @param {Array} extra_copy
  * @returns {any}
  */
-function copyExtraFiles(extra_copy){
+function copyExtraFiles(extra_copy) {
     if (Array.isArray(extra_copy) && extra_copy.length > 0) {
         console.info('copying extra files...');
         for (const transport of extra_copy) {

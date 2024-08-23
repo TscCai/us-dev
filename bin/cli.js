@@ -29,9 +29,20 @@ function usdev(args) {
             init(args.slice(1));
             break;
         case 'build':
+            const restArgs = args.slice(1);
+            if (restArgs.length === 1 && restArgs[0] !== 'deploy') {
+                console.info('Unknown argument after "build".');
+                showHelpInfo();
+                return;
+            }
             try {
-                let config = loadConfig(args.slice(1));
+                //let config = loadConfig(args.slice(1));
+                let config = loadConfig([]);
                 build(config);
+
+                if (restArgs.length === 1) {
+                    deploy(restArgs);
+                }
             }
             catch (err) {
                 console.error(err);
@@ -68,6 +79,7 @@ function showHelpInfo() {
     console.info(`usdev deploy                                  deploy the built userscript in default browser`);
     console.info(`usdev deploy --browser <foo>                  deploy the built userscript in browser <foo>`);
     console.info(`usdev deploy -b <foo>                         same as usdev deploy --browser <foo>`);
+    console.info(`usdev build deploy                            build project and deploy it`);
     console.info(`usdev help                                    show help info`);
 }
 
