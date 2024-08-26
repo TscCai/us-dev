@@ -26,23 +26,34 @@ const build = function (config) {
     let options = createUglifyJSOptions(config);
 
     console.info('compiling...');
-    let result = UglifyJS.minify(src, options);
+    let outputArr = [];
+    const outputFilename = [config.output, config.output.replace(/\.user\.js$/, '-debug.user.js')]
+    //let result = UglifyJS.minify(src, options);
+    outputArr.push(UglifyJS.minify(src, options));
+
+    options.compress = false;
+    outputArr.push(UglifyJS.minify(src, options));
+
 
     // 若uglifyJS中出现异常，则将该异常抛出
-    if (result.error !== void 0 && result.error instanceof Error) {
-        console.error("Error occurred when compiling.");
-        throw result.error;
+    for (let result of outputArr) {
+        const filename = outputFilename.shift();
+        if (result.error !== void 0 && result.error instanceof Error) {
+            console.error("Error occurred when compiling.");
+            throw result.error;
+        }
+
+        // 装饰编译后的代码：添加头文件、代码Hash、编译时间戳等
+        let script = decorateMinifiedCode(header, result.code, config);
+
+        // 将最终的代码输出到文件
+        const outputDir = path.dirname(path.resolve(filename));
+        if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir);
+        }
+        fs.writeFileSync(filename, script);
     }
 
-    // 装饰编译后的代码：添加头文件、代码Hash、编译时间戳等
-    let script = decorateMinifiedCode(header, result.code, config);
-
-    // 将最终的代码输出到文件
-    const outputDir = path.dirname(path.resolve(config.output));
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir);
-    }
-    fs.writeFileSync(config.output, script);
 
     // 编译后剩余工作，清理临时文件、复制额外文件等
     afterBuild(config);

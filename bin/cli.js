@@ -231,7 +231,7 @@ function deploy(args) {
         console.warn('No browser to deploy.');
         return;
     }
-    const builtScript = config.output;
+    const builtScript = config.output.replace(/\.user\.js$/, '-debug.user.js');
     const url = `file:///${path.resolve(WORKSPACE, builtScript)}`;
     // 用浏览器打开脚本，手动安装部署
     try {
@@ -264,7 +264,11 @@ function getDeployBrowser(name) {
             browser = "msedge";
             break;
         default:
-            throw new Error('No browser can use.');
+            if (!fs.existsSync(name)) {
+                throw new Error('No browser can use.');
+            }
+            browser = name;
+
     }
     return browser;
 }
@@ -279,6 +283,9 @@ function getDeployBrowser(name) {
  */
 function open(url, browser) {
     const child_process = require('child_process');
-    const cmd = `start ${browser} ${url}`;
+    let cmd = `start ${browser} "${url}"`;
+    if (browser.endsWith('.exe')) {
+        cmd = `"${browser}" "${url}"`;
+    }
     child_process.execSync(cmd);
 }

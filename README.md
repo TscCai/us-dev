@@ -25,6 +25,11 @@ usdev build
 usdev deploy
 ```
 
+### Combine command (build and deploy script)
+```bash
+usdev build deploy
+```
+
 ### Samples
 us-dev.json
 ```json
