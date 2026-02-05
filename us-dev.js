@@ -21,6 +21,8 @@ const build = function (config) {
     console.info('analyzing dependency tree...');
     let list = createDependencyList(config);
     let src = loadSourceCode(list);
+
+    const syntaxResult = checkSyntaxCompatibility(src, list);
     console.info('linking source file finished.');
 
     // 生成uglifyJS配置，编译代码
@@ -148,13 +150,14 @@ function createDependencyList(config) {
  * @returns {Object} {src_index:code, ...}
  */
 function loadSourceCode(dependencyList, removeRequire = true) {
-    let result = {};
+    let result = [];
     for (let cnt = 0; cnt < dependencyList.length; cnt++) {
         let partialScript = fs.readFileSync(dependencyList[cnt], 'utf8');
         if (removeRequire) {
             partialScript = partialScript.replace(/require\(['"](.*)['"]\);?/g, '');
         }
-        result[`s_${cnt} `] = partialScript;
+        //result[`s_${cnt} `] = partialScript;
+        result.push(partialScript);
     }
     return result;
 }
@@ -245,6 +248,25 @@ function createScriptHash(data) {
  */
 function afterBuild(config) {
     copyExtraFiles(config.extra_copy);
+}
+function checkSyntaxCompatibility(srcList, fileList) {
+
+    for (let i = 0; i < srcList.length; i++) {
+        const src = srcList[i];
+        const lines = src.split('\r\n');
+        for (let j = 0; j < lines.length; j++) {
+            performeSyntaxCheck(lines[j], fileList[i], j + 1);
+        }
+    }
+}
+
+function performeSyntaxCheck(line, filename, lineCnt) {
+    if (line.indexOf('?.') > -1) {
+        console.warn(`Warning: [file: ${filename}][line: ${lineCnt}] Operator "?." may not supported in old browsers.`);
+    }
+    if (line.indexOf('.replaceAll(') > -1) {
+        console.warn(`Warning: [file: ${filename}][line: ${lineCnt}] api "replaceAll()" may not supported in old browsers.`);
+    }
 }
 
 /**

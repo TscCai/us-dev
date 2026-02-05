@@ -170,7 +170,7 @@ function init(args) {
         }
     }
 
-    let projectName = 'us-dev project';
+    let projectName = 'us-dev-project';
     if (args.length === 1) {
         projectName = args[0];
     }
