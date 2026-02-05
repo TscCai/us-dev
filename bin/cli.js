@@ -135,8 +135,8 @@ function loadConfig(args) {
  * @returns {void}
  */
 function build(config) {
-    const usBuild = require('../us-build');
-    usBuild.build(config);
+    const usDev = require('../us-dev');
+    usDev.build(config);
 }
 
 /**
